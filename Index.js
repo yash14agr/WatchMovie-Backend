@@ -2,10 +2,10 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import bodyParser from 'body-parser';
-import UserSchema from "../Schema/user.js";
+import UserSchema from "./Schema/user.js";
 // import dbUrl from "./config/keys.js"
-import validateLogin from "../Auth/ValidateLogin.js"
-import validateSignIn from "../Auth/ValidateSignIn.js"
+import validateLogin from "./Auth/ValidateLogin.js"
+import validateSignIn from "./Auth/ValidateSignIn.js"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import 'dotenv/config'
