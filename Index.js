@@ -3,6 +3,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import bodyParser from 'body-parser';
 import UserSchema from "./Schema/User.js";
+import MovieSchema from "./Schema/Movie.js";
 // import dbUrl from "./config/keys.js"
 import validateLogin from "./Auth/ValidateLogin.js"
 import validateSignIn from "./Auth/ValidateSignIn.js"
@@ -54,7 +55,6 @@ app.post('/SignIn', async (req, res) => {
     await UserSchema.findOne({ Email: req.body.Email })
         .then(async olduser => {
             if (olduser) {
-                // res.send({ message: "user Already Exit" })
                 message.Email = "Email already exists";
                 return res.json({ message: message });
             }
@@ -68,6 +68,9 @@ app.post('/SignIn', async (req, res) => {
                     UserName: req.body.UserName,
                     Email: req.body.Email,
                     Password: passwordHash,
+                    // MovieBooked:[{
+                    //     M
+                    // }]
                 })
                 try {
                     //save user in db
@@ -77,7 +80,6 @@ app.post('/SignIn', async (req, res) => {
                     const token = jwt.sign({
                         user: savedUser._id
                     }, process.env.My_secret_code)
-                    // console.log(token)
 
                     //sending token without using local storage
                     res.cookie("token", token, {
@@ -152,6 +154,68 @@ app.post('/Login', async (req, res) => {
     return res.json({ message: message, userData, isValid })
 
 })
+
+
+app.post('/UserDetails', async (req, res) => {
+
+    const data = {
+        Email: req.body.Email,
+        Name: req.body.Name,
+        MoviesBooked: [{
+            ImgUrl: req.body.ImgUrl,
+            Language: req.body.Language || 'English',
+            MovieName: req.body.MovieName,
+            Day: req.body.Day,
+            Time: req.body.Time,
+            TotalSeat: req.body.TotalSeat,
+            TotalPrice: req.body.TotalPrice
+        }]
+    }
+
+    var message = {
+        successfull: false
+    }
+    const existUser = await MovieSchema.findOne({ Email: data.Email })
+    if (!existUser) {
+        //save directly
+        let newUser = new MovieSchema(data);
+        try {
+            const savedUser = await newUser.save()
+            message.successfull = true
+            res.json({ messge: message })
+        }
+        catch (e) {
+            console.log(e)
+            res.json({ messge: message })
+        }
+
+    } else {
+        existUser.MoviesBooked.push(data.MoviesBooked[0])
+        try {
+            const savedUser = await existUser.save()
+            message.successfull = true
+            res.json({ messge: message })
+        }
+        catch (e) {
+            console.log(e)
+            res.json({ messge: message })
+        }
+    }
+})
+
+app.post('/Profile', async (req, res) => {
+    console.log("emial in profile", req.body.Email)
+    const existUser = await MovieSchema.findOne({ Email: req.body.Email })
+    if (!existUser) {
+        console.log("User Not found")
+    }
+    else {
+        console.log('Profile data passed:', existUser)
+        res.json({ existUser })
+
+    }
+})
+
 
 app.listen(PORT, () => {
     console.log(`server is running on port ${PORT}`)
