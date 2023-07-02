@@ -10,6 +10,8 @@ import validateSignIn from "./Auth/ValidateSignIn.js"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import 'dotenv/config'
+import generateMail from './GenerateMail/Mail.js'
+
 
 const PORT = process.env.PORT || 5000;
 
@@ -182,29 +184,39 @@ app.post('/UserDetails', async (req, res) => {
         try {
             const savedUser = await newUser.save()
             message.successfull = true
-            res.json({ messge: message })
+
         }
         catch (e) {
             console.log(e)
-            res.json({ messge: message })
+
         }
+
 
     } else {
         existUser.MoviesBooked.push(data.MoviesBooked[0])
         try {
             const savedUser = await existUser.save()
             message.successfull = true
-            res.json({ messge: message })
+
         }
         catch (e) {
             console.log(e)
-            res.json({ messge: message })
+
         }
+
     }
+    //generate mail
+    var msg
+    await generateMail(data)
+    // .then((msg1) => {
+    // msg = msg1
+    // })
+    // .catch(e => console.log(e))
+    return res.json({ message: message })
 })
 
+
 app.post('/Profile', async (req, res) => {
-    console.log("emial in profile", req.body.Email)
     const existUser = await MovieSchema.findOne({ Email: req.body.Email })
     if (!existUser) {
         console.log("User Not found")
@@ -212,7 +224,6 @@ app.post('/Profile', async (req, res) => {
     else {
         console.log('Profile data passed:', existUser)
         res.json({ existUser })
-
     }
 })
 
