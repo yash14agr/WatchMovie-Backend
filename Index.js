@@ -34,7 +34,7 @@ db.once("open", function () {
 });
 
 
-app.post('/SignIn', async (req, res) => {
+app.post('/SignUp', async (req, res) => {
 
     //validating signIn Detils
     var message = {
@@ -49,7 +49,7 @@ app.post('/SignIn', async (req, res) => {
     if (!isValid) {
         message = errors
         message.successfull = ""
-        return res.json({ message: message, isValid:false })
+        return res.json({ message: message, isValid: false })
     }
 
 
@@ -58,7 +58,7 @@ app.post('/SignIn', async (req, res) => {
         .then(async olduser => {
             if (olduser) {
                 message.Email = "Email already exists";
-                return res.json({ message: message, isValid:false });
+                return res.json({ message: message, isValid: false });
             }
             else {
                 //encoding password to passwordHash
@@ -88,11 +88,11 @@ app.post('/SignIn', async (req, res) => {
                         httpOnly: true,
                     })
                     message.successfull = "Successfull Sign-In"
-                    return res.json({ message: message , isValid:true})
+                    return res.json({ message: message, isValid: true })
                 }
                 catch (e) {
                     console.error(e)
-                    return res.json({ message: message , isValid:false});
+                    return res.json({ message: message, isValid: false });
                 }
             }
         })
