@@ -4,7 +4,6 @@ import mongoose from "mongoose";
 import bodyParser from 'body-parser';
 import UserSchema from "./Schema/User.js";
 import MovieSchema from "./Schema/Movie.js";
-// import dbUrl from "./config/keys.js"
 import validateLogin from "./Auth/ValidateLogin.js"
 import validateSignIn from "./Auth/ValidateSignIn.js"
 import bcrypt from "bcryptjs"
@@ -12,14 +11,13 @@ import jwt from "jsonwebtoken"
 import 'dotenv/config'
 import generateMail from './GenerateMail/Mail.js'
 
-
 const PORT = process.env.PORT || 5000;
 
 //middleware
 const app = express();
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({ origin: '*' }));
 
 // Connect to MongoDB
 mongoose.connect(process.env.dbUrl, { useNewUrlParser: true })
@@ -206,23 +204,34 @@ app.post('/UserDetails', async (req, res) => {
 
     }
     //generate mail
-    var msg
     await generateMail(data)
-    // .then((msg1) => {
-    // msg = msg1
-    // })
-    // .catch(e => console.log(e))
+        .catch(e => console.log(e))
     return res.json({ message: message })
 })
 
 
 app.post('/Profile', async (req, res) => {
+    // const data = {
+    //     Email: req.body.Email,
+    //     Name: req.body.Name,
+    //     MoviesBooked: [{
+    //         ImgUrl: req.body.ImgUrl,
+    //         Language: req.body.Language || 'English',
+    //         MovieName: req.body.MovieName,
+    //         Day: req.body.Day,
+    //         Time: req.body.Time,
+    //         TotalSeat: req.body.TotalSeat,
+    //         TotalPrice: req.body.TotalPrice
+    //     }]
+    // }
+
     const existUser = await MovieSchema.findOne({ Email: req.body.Email })
     if (!existUser) {
-        console.log("User Not found")
+        // console.log("User Not found")
+        res.json()
     }
     else {
-        console.log('Profile data passed:', existUser)
+        // console.log('Profile data passed:', existUser)
         res.json({ existUser })
     }
 })
