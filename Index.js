@@ -4,8 +4,8 @@ import mongoose from "mongoose";
 import bodyParser from 'body-parser';
 import UserSchema from "./Schema/User.js";
 import MovieSchema from "./Schema/Movie.js";
-import validateLogin from "./Auth/ValidateLogin.js"
-import validateSignIn from "./Auth/ValidateSignIn.js"
+// import validateLogin from "./Auth/ValidateLogin.js"
+// import validateSignIn from "./Auth/ValidateSignIn.js"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import 'dotenv/config'
