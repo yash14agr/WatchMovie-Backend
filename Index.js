@@ -43,12 +43,12 @@ app.post('/SignUp', async (req, res) => {
         Password: "",
         RePassword: ""
     }
-    const { errors, isValid } = validateSignIn(req.body)
-    if (!isValid) {
-        message = errors
-        message.successfull = ""
-        return res.json({ message: message, isValid: false })
-    }
+    // const { errors, isValid } = validateSignIn(req.body)
+    // if (!isValid) {
+    //     message = errors
+    //     message.successfull = ""
+    //     return res.json({ message: message, isValid: false })
+    // }
 
 
     //checking if email already exists
@@ -68,9 +68,6 @@ app.post('/SignUp', async (req, res) => {
                     UserName: req.body.UserName,
                     Email: req.body.Email,
                     Password: passwordHash,
-                    // MovieBooked:[{
-                    //     M
-                    // }]
                 })
                 try {
                     //save user in db
@@ -85,12 +82,13 @@ app.post('/SignUp', async (req, res) => {
                     res.cookie("token", token, {
                         httpOnly: true,
                     })
-                    message.successfull = "Successfull Sign-In"
-                    return res.json({ message: message, isValid: true })
+                    // message.successfull = "Successfull Sign-In"
+                    // return res.json({ message: message, isValid: true })
+                    return res.json({ isValid: true })
                 }
                 catch (e) {
                     console.error(e)
-                    return res.json({ message: message, isValid: false });
+                    return res.json({ isValid: false });
                 }
             }
         })
@@ -113,13 +111,13 @@ app.post('/Login', async (req, res) => {
         Email: "",
     }
     //validating Login Detils
-    const { errors, isValid } = validateLogin(req.body)
+    // const { errors, isValid } = validateLogin(req.body)
 
-    if (!isValid) {
-        message = errors
-        message.successfull = ""
-        return res.json({ message: message, isValid });
-    }
+    // if (!isValid) {
+    //     message = errors
+    //     message.successfull = ""
+    //     return res.json({ message: message, isValid });
+    // }
 
     //checking if email exists
     const existUser = await UserSchema.findOne({ Email: email })
